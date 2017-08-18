@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 
 import com.example.yanmastra.movieinfo.adpter.MovieAdapter;
 import com.google.gson.Gson;
@@ -27,12 +28,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, gridLayoutColumns(this));
         rvMovie.setLayoutManager(layoutManager);
         rvMovie.setHasFixedSize(true);
         addingData();
         movieAdapter = new MovieAdapter(data);
         rvMovie.setAdapter(movieAdapter);
+    }
+    private int gridLayoutColumns(MainActivity mainActivity){
+        DisplayMetrics displayMetrics = mainActivity.getResources().getDisplayMetrics();
+        float width = displayMetrics.widthPixels /displayMetrics.density;
+        int columns = (int) (width/120);
+        return columns;
     }
     private List<String> addingData(){
         for (int i=1; i<=10; i++){
