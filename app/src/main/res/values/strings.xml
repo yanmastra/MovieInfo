@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Movie Info</string>
+    <string name="movie_title">Movie Title</string>
+    <string name="releas_date_label">Releas date</string>
+    <string name="vote_label">Rating</string>
+    <string name="overiew_label">Overview Label</string>
+    <string name="trailer_label">Trailer</string>
+    <string name="filed_load_trailer">Failed to load trailer</string>
+    <string name="overview">Minios Stuart, Kevin and Bob are recruited by Scarlet Overkill, a supper-villain who, alongside her inventor husband Herb, harches a plot to take over the world.</string>
+    <string name="releas_date">Jun 17, 2015</string>
+    <string name="vote">6.4</string>
+    <string name="author">Andres Gomez</string>
+    <string name="review_text">
+        "The minions are a nice idea and the animation and London recreation is really good, but that's about it. "
+        "The script is boring and the jokes not really funny. "
+    </string>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="review_label">Reviews</string>
+    <string name="filed_load_review">Failed to load review</string>
 </resources>

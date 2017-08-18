@@ -5,9 +5,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.example.yanmastra.movieinfo.R;
+import com.example.yanmastra.movieinfo.model.movies.MovieResults;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +23,9 @@ import butterknife.ButterKnife;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder>{
     private Context context;
-    private List<String> data = new ArrayList<>();
+    private List<MovieResults> data = new ArrayList<>();
 
-    public MovieAdapter(List<String> data) {
+    public MovieAdapter(List<MovieResults> data) {
         this.data = data;
     }
 
@@ -46,16 +48,24 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
     class MovieViewHolder extends RecyclerView.ViewHolder{
-        //@BindView(R.id.iv_movie_items) ImageView img_movie_items;
-        @BindView(R.id.tv_movie_items)
-        TextView txt_movie_items;
+        @BindView(R.id.iv_movie_items) ImageView img_movie_items;
+        //@BindView(R.id.tv_movie_items) TextView txt_movie_items;
 
         public MovieViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-        public void bind(String data){
-            txt_movie_items.setText(data);
+        public void bind(MovieResults data){
+            //txt_movie_items.setText(data.getTitle());
+            Picasso.with(itemView.getContext())
+                    .load("http://image.tmdb.org/t/p/w185"+data.getPoster_path())
+                    .placeholder(R.drawable.ic_local_movie)
+                    .error(R.drawable.ic_error).into(img_movie_items);
         }
+    }
+    public void replaceAll(List<MovieResults> list){
+        this.data.clear();
+        this.data = list;
+        notifyDataSetChanged();
     }
 }
