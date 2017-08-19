@@ -16,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
+            android:orientation="horizontal"
             android:id="@+id/head_bar"
             android:background="@color/primary"
             android:padding="8dp"
@@ -23,19 +24,34 @@
             android:layout_height="wrap_content">
             <ImageView
                 android:id="@+id/iv_detail_poster"
-                android:layout_weight="0.3"
+                android:layout_weight="0.35"
                 android:scaleType="fitCenter"
                 android:layout_width="0dp"
-                android:layout_height="120dp"
+                android:layout_height="match_parent"
                 android:background="@drawable/port_minions"/>
             <LinearLayout
                 android:orientation="vertical"
-                android:paddingLeft="4dp"
-                android:layout_weight="0.7"
+                android:paddingLeft="8dp"
+                android:layout_weight="0.65"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content">
                 <TextView
+                    android:layout_marginTop="4dp"
+                    android:text="@string/gendre_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/icons"/>
+                <TextView
+                    android:id="@+id/tv_gendre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/icons"
+                    tools:text="@string/gendre"/>
+                <TextView
                     android:layout_marginTop="@dimen/text_margin"
+                    android:textSize="12sp"
                     android:text="@string/releas_date_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -44,7 +60,7 @@
                     android:id="@+id/tv_releas_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="@color/icons"
                     tools:text="@string/releas_date"/>
@@ -58,10 +74,24 @@
                     android:id="@+id/tv_vote_average"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="@color/icons"
                     tools:text="@string/vote"/>
+                <TextView
+                    android:layout_marginTop="@dimen/text_margin"
+                    android:text="@string/ori_language_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/icons"/>
+                <TextView
+                    android:id="@+id/tv_ori_language"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/icons"
+                    tools:text="@string/ori_language"/>
             </LinearLayout>
         </LinearLayout>
         <TextView
@@ -126,7 +156,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginStart="5dp"
                 android:textStyle="bold"
-                android:textSize="18dp"
+                android:textSize="18sp"
                 android:textColor="@color/icons"
                 android:text="@string/review_label"
                 android:layout_width="match_parent"

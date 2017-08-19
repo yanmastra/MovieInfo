@@ -54,6 +54,6 @@
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
         app:backgroundTint="@color/primary"
-        app:srcCompat="@drawable/ic_star_unselected" />
+        app:srcCompat="@drawable/ic_star_unselected"/>
 
 </android.support.design.widget.CoordinatorLayout>
