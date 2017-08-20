@@ -7,6 +7,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -97,5 +98,11 @@ implements MovieAdapter.ItemClickListener{
         startDetailactivity.putExtra(Constant.MOVIE_KEY, gson.toJson(data));
         startDetailactivity.putExtra(Constant.MOVIE_ID, String.valueOf(data.getId()));
         startActivity(startDetailactivity);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }

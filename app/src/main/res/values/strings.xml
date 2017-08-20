@@ -22,4 +22,7 @@
     <string name="gendre">Movie gendre</string>
     <string name="ori_language_label">Original Language</string>
     <string name="ori_language">English</string>
+    <string name="menu_most_popular">Most Popular</string>
+    <string name="menu_top_rated">Top Rated</string>
+    <string name="menu_favorites">Favorites</string>
 </resources>
