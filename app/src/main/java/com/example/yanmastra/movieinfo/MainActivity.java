@@ -1,5 +1,6 @@
 package com.example.yanmastra.movieinfo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,7 +14,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.yanmastra.movieinfo.adpter.MovieAdapter;
+import com.example.yanmastra.movieinfo.adapter.MovieAdapter;
 import com.example.yanmastra.movieinfo.model.movies.MovieResults;
 import com.example.yanmastra.movieinfo.model.movies.Movies;
 import com.example.yanmastra.movieinfo.utilities.Constant;
@@ -25,7 +26,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+implements MovieAdapter.ItemClickListener{
     @BindView(R.id.rv_movie) RecyclerView rvMovie;
     private List<MovieResults> data = new ArrayList<>();
     private MovieAdapter movieAdapter;
@@ -42,10 +44,10 @@ public class MainActivity extends AppCompatActivity {
         rvMovie.setLayoutManager(layoutManager);
         rvMovie.setHasFixedSize(true);
         //addingData();
-        movieAdapter = new MovieAdapter(data);
+        movieAdapter = new MovieAdapter(data, this);
         rvMovie.setAdapter(movieAdapter);
         movieAdapter.replaceAll(data);
-        getDataFromAPI("popular");
+        getDataFromAPI(Constant.POPULAR);
     }
     private int gridLayoutColumns(MainActivity mainActivity){
         DisplayMetrics displayMetrics = mainActivity.getResources().getDisplayMetrics();
@@ -87,5 +89,13 @@ public class MainActivity extends AppCompatActivity {
 
         );
         requestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void onItemClick(MovieResults data, int position) {
+        Intent startDetailactivity = new Intent(this, DetailActivity.class);
+        startDetailactivity.putExtra(Constant.MOVIE_KEY, gson.toJson(data));
+        startDetailactivity.putExtra(Constant.MOVIE_ID, String.valueOf(data.getId()));
+        startActivity(startDetailactivity);
     }
 }

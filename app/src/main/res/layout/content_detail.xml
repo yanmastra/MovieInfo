@@ -10,7 +10,6 @@
     tools:context="com.example.yanmastra.movieinfo.DetailActivity"
     tools:showIn="@layout/activity_detail">
 
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -28,7 +27,7 @@
                 android:scaleType="fitCenter"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:background="@drawable/port_minions"/>
+                tools:src="@drawable/port_minions"/>
             <LinearLayout
                 android:orientation="vertical"
                 android:paddingLeft="8dp"
@@ -107,6 +106,7 @@
             android:textSize="16sp"
             android:paddingLeft="@dimen/text_margin"
             android:paddingRight="@dimen/text_margin"
+            android:paddingBottom="@dimen/text_margin"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textColor="@color/primary_dark"
@@ -114,8 +114,7 @@
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_marginTop="10dp"
-            android:paddingTop="5dp"
+            android:paddingTop="15dp"
             android:paddingBottom="5dp"
             android:background="@color/primary"
             android:layout_width="match_parent"
@@ -146,8 +145,7 @@
         </LinearLayout>
         <LinearLayout
             android:orientation="vertical"
-            android:layout_marginTop="10dp"
-            android:paddingTop="5dp"
+            android:paddingTop="16dp"
             android:paddingBottom="5dp"
             android:background="@color/primary"
             android:layout_width="match_parent"

@@ -16,7 +16,7 @@
     </string>
     <string name="title_activity_detail">DetailActivity</string>
     <string name="review_label">Reviews</string>
-    <string name="filed_load_review">Failed to load review</string>
+    <string name="filed_load_review">Failed to load reviews</string>
     <string name="trailer_title">Monios</string>
     <string name="gendre_label">Gendre</string>
     <string name="gendre">Movie gendre</string>

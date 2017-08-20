@@ -25,13 +25,13 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
-                android:id="@+id/iv_movie_backdrop"
+                android:id="@+id/iv_backdrop"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7"
-                android:background="@drawable/land_minions"/>
+                tools:src="@drawable/land_minions"/>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
