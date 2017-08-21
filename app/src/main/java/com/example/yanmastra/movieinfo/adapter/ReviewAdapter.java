@@ -2,6 +2,7 @@ package com.example.yanmastra.movieinfo.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import butterknife.ButterKnife;
  */
 
 public class ReviewAdapter  extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>{
+    private static final String TAG = ReviewAdapter.class.getSimpleName();
     private List<ReviewResults> data = new ArrayList<>();
 
     public ReviewAdapter(List<ReviewResults> data) {
@@ -55,6 +57,7 @@ public class ReviewAdapter  extends RecyclerView.Adapter<ReviewAdapter.ReviewVie
         public void bind(ReviewResults result){
             this.author.setText(result.getAuthor());
             this.review.setText(result.getContent());
+            Log.e(TAG, "ini Adapter content : "+result.getContent());
         }
     }
     public void replaceAll(List<ReviewResults> list){

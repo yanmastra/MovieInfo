@@ -159,6 +159,7 @@ public class DetailActivity extends AppCompatActivity {
                             Reviews reviews = gson.fromJson(response, Reviews.class);
                             for (ReviewResults result : reviews.getResults()) {
                                 reviewResultses.add(result);
+                                Log.e(TAG, "Content req: "+result.getContent());
                             }
                             trailerAdapter.notifyDataSetChanged();
                             Log.e(TAG, "ini reviews "+response);
