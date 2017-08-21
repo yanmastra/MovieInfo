@@ -15,4 +15,7 @@ public class Constant {
     public static final String MOVIE_ID = "";
     public static final String VIDEOS = "/videos";
     public static final String REVIEWS = "/reviews";
+    public static final String TOP_RATED = "top_rated";
+    public static final String LATEST = "latest";
+    public static final String UP_COMING = "upcoming";
 }

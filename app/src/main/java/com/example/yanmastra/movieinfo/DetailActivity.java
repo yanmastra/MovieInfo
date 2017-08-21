@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -198,5 +199,10 @@ public class DetailActivity extends AppCompatActivity {
         tvVoteAverage.setText(String.valueOf(movieResults.getVote_average()));
         tvOverview.setText(movieResults.getOverview());
         oriLanguage.setText(movieResults.getOriginal_language());
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }
