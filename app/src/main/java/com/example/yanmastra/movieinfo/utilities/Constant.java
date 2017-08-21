@@ -18,4 +18,6 @@ public class Constant {
     public static final String TOP_RATED = "top_rated";
     public static final String LATEST = "latest";
     public static final String UP_COMING = "upcoming";
+    public static final String NOW_PLAYING = "now_playing";
+    public static final String FAVORITES = "favorites";
 }

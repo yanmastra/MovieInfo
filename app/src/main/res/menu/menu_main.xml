@@ -11,6 +11,14 @@
         android:id="@+id/action_top_rated" />
     <item
         app:showAsAction="never"
+        android:title="@string/menu_upcoming"
+        android:id="@+id/action_up_coming"/>
+    <item
+        app:showAsAction="never"
+        android:title="@string/menu_now_playing"
+        android:id="@+id/action_now_playing" />
+    <item
+        app:showAsAction="never"
         android:title="@string/menu_favorites"
         android:id="@+id/action_favorites"/>
 </menu>

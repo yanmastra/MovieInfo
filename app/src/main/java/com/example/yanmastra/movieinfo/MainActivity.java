@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,6 +37,10 @@ implements MovieAdapter.ItemClickListener{
     private Gson gson = new Gson();
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    private String selectedCategory = Constant.POPULAR;
+    private int curentPage;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +54,7 @@ implements MovieAdapter.ItemClickListener{
         rvMovie.setAdapter(movieAdapter);
         movieAdapter.replaceAll(data);
         getDataFromAPI(Constant.POPULAR);
+        getSupportActionBar().setSubtitle(Constant.POPULAR);
     }
     private int gridLayoutColumns(MainActivity mainActivity){
         DisplayMetrics displayMetrics = mainActivity.getResources().getDisplayMetrics();
@@ -104,5 +110,61 @@ implements MovieAdapter.ItemClickListener{
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId){
+            case R.id.action_most_popular :
+                selectedCategory = Constant.POPULAR;
+                loadData(selectedCategory);
+                getSupportActionBar().setSubtitle(R.string.menu_most_popular);
+                return true;
+            case R.id.action_top_rated :
+                selectedCategory = Constant.TOP_RATED;
+                loadData(selectedCategory);
+                getSupportActionBar().setSubtitle(R.string.menu_top_rated);
+                return true;
+            case R.id.action_up_coming :
+                selectedCategory = Constant.UP_COMING;
+                loadData(selectedCategory);
+                getSupportActionBar().setSubtitle(R.string.menu_upcoming);
+                return true;
+            case R.id.action_now_playing :
+                selectedCategory = Constant.NOW_PLAYING;
+                loadData(selectedCategory);
+                getSupportActionBar().setSubtitle(R.string.menu_now_playing);
+                return true;
+            case R.id.action_favorites :
+                selectedCategory = Constant.FAVORITES;
+                loadData(selectedCategory);
+                getSupportActionBar().setSubtitle(R.string.menu_favorites);
+                return true;
+            default: return false;
+        }
+    }
+
+    private void loadData(String category){
+        switch (category){
+            case Constant.POPULAR :
+                movieAdapter.replaceAll(data);
+                getDataFromAPI(Constant.POPULAR);
+                break;
+            case Constant.TOP_RATED :
+                movieAdapter.replaceAll(data);
+                getDataFromAPI(category);
+                break;
+            case Constant.UP_COMING :
+                movieAdapter.replaceAll(data);
+                getDataFromAPI(category);
+                break;
+            case Constant.NOW_PLAYING :
+                movieAdapter.replaceAll(data);
+                getDataFromAPI(category);
+                break;
+            case Constant.FAVORITES :
+                movieAdapter.replaceAll(data);
+                break;
+        }
     }
 }
