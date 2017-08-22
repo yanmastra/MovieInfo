@@ -52,7 +52,7 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.iv_backdrop) ImageView ivBackDrop;
     @BindView(R.id.iv_detail_poster) ImageView ivPoster;
     @BindView(R.id.tv_genre) TextView tvGenre;
-    @BindView(R.id.tv_releas_date) TextView tvReleasDate;
+    @BindView(R.id.tv_release_date) TextView tvReleaseDate;
     @BindView(R.id.tv_vote_average) TextView tvVoteAverage;
     @BindView(R.id.tv_overview) TextView tvOverview;
     @BindView(R.id.tv_ori_language) TextView oriLanguage;
@@ -104,7 +104,7 @@ public class DetailActivity extends AppCompatActivity {
     private void getTrailerFromAPI(String movieId){
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         String url = Constant.API_URL + movieId + Constant.VIDEOS + Constant.PARAM_API_KEY + Constant.API_KEY;
-        Log.e(TAG, "ini url TRailer "+url);
+        Log.e(TAG, "ini url Trailer "+url);
         StringRequest stringRequest = new StringRequest(
                 Request.Method.GET,
                 url,
@@ -196,7 +196,7 @@ public class DetailActivity extends AppCompatActivity {
                 .placeholder(R.drawable.ic_local_movie)
                 .error(R.drawable.ic_error)
                 .into(ivPoster);
-        tvReleasDate.setText(DateFormatter.getReadableDate(movieResults.getRelease_date()));
+        tvReleaseDate.setText(DateFormatter.getReadableDate(movieResults.getRelease_date()));
         tvVoteAverage.setText(String.valueOf(movieResults.getVote_average()));
         tvOverview.setText(movieResults.getOverview());
         oriLanguage.setText(movieResults.getOriginal_language());
