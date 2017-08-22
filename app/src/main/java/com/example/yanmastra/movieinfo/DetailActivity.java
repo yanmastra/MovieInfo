@@ -51,7 +51,7 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.cl_parent_detail) CoordinatorLayout parentDetail;
     @BindView(R.id.iv_backdrop) ImageView ivBackDrop;
     @BindView(R.id.iv_detail_poster) ImageView ivPoster;
-    @BindView(R.id.tv_gendre) TextView tvGendre;
+    @BindView(R.id.tv_genre) TextView tvGenre;
     @BindView(R.id.tv_releas_date) TextView tvReleasDate;
     @BindView(R.id.tv_vote_average) TextView tvVoteAverage;
     @BindView(R.id.tv_overview) TextView tvOverview;
@@ -200,6 +200,17 @@ public class DetailActivity extends AppCompatActivity {
         tvVoteAverage.setText(String.valueOf(movieResults.getVote_average()));
         tvOverview.setText(movieResults.getOverview());
         oriLanguage.setText(movieResults.getOriginal_language());
+        String genre = "";
+        int i=1;
+        for (int genId : movieResults.getGenre_ids()) {
+            if(i==1) {
+                genre += Constant.getMovieGenre(genId);
+            }else{
+                genre += ", "+Constant.getMovieGenre(genId);
+            }
+            i++;
+        }
+        tvGenre.setText(genre);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
