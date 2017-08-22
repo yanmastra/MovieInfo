@@ -59,11 +59,11 @@ public class DetailActivity extends AppCompatActivity {
 
     @BindView(R.id.rv_reviews) RecyclerView rvReview;
     private ReviewAdapter reviewAdapter;
-    private List<ReviewResults> reviewResultses = new ArrayList<>();
+    private List<ReviewResults> reviewResults = new ArrayList<>();
 
     @BindView(R.id.rv_trailers) RecyclerView rvTrailer;
     private TrailerAdapter trailerAdapter;
-    private List<TrailerResults> trailerResultses = new ArrayList<>();
+    private List<TrailerResults> trailerResults = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +94,7 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
     private void trailerRecyclerView(){
-        trailerAdapter = new TrailerAdapter(trailerResultses);
+        trailerAdapter = new TrailerAdapter(trailerResults);
         rvTrailer.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         rvTrailer.setHasFixedSize(true);
         rvTrailer.setAdapter(trailerAdapter);
@@ -114,7 +114,7 @@ public class DetailActivity extends AppCompatActivity {
                         try {
                             Trailer trailer = gson.fromJson(response, Trailer.class);
                             for (TrailerResults result : trailer.getResults()) {
-                                trailerResultses.add(result);
+                                trailerResults.add(result);
                             }
                             trailerAdapter.notifyDataSetChanged();
                         } catch (Exception e) {
@@ -138,7 +138,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void reviewRecyclerView(){
-        reviewAdapter = new ReviewAdapter(reviewResultses);
+        reviewAdapter = new ReviewAdapter(reviewResults);
         rvReview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         rvReview.setHasFixedSize(true);
         movieId = getIntent().getStringExtra(Constant.MOVIE_ID);
@@ -158,7 +158,7 @@ public class DetailActivity extends AppCompatActivity {
                         try {
                             Reviews reviews = gson.fromJson(response, Reviews.class);
                             for (ReviewResults result : reviews.getResults()) {
-                                reviewResultses.add(result);
+                                reviewResults.add(result);
                                 Log.e(TAG, "Content req: "+result.getContent());
                             }
                             trailerAdapter.notifyDataSetChanged();

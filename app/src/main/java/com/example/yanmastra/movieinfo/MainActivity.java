@@ -38,7 +38,6 @@ implements MovieAdapter.ItemClickListener{
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private String selectedCategory = Constant.POPULAR;
-    private int curentPage;
 
 
     @Override
@@ -54,7 +53,7 @@ implements MovieAdapter.ItemClickListener{
         rvMovie.setAdapter(movieAdapter);
         movieAdapter.replaceAll(data);
         getDataFromAPI(Constant.POPULAR);
-        getSupportActionBar().setSubtitle(Constant.POPULAR);
+        getSupportActionBar().setSubtitle(R.string.menu_most_popular);
     }
     private int gridLayoutColumns(MainActivity mainActivity){
         DisplayMetrics displayMetrics = mainActivity.getResources().getDisplayMetrics();
@@ -100,10 +99,10 @@ implements MovieAdapter.ItemClickListener{
 
     @Override
     public void onItemClick(MovieResults data, int position) {
-        Intent startDetailactivity = new Intent(this, DetailActivity.class);
-        startDetailactivity.putExtra(Constant.MOVIE_KEY, gson.toJson(data));
-        startDetailactivity.putExtra(Constant.MOVIE_ID, String.valueOf(data.getId()));
-        startActivity(startDetailactivity);
+        Intent startDetailActivity = new Intent(this, DetailActivity.class);
+        startDetailActivity.putExtra(Constant.MOVIE_KEY, gson.toJson(data));
+        startDetailActivity.putExtra(Constant.MOVIE_ID, String.valueOf(data.getId()));
+        startActivity(startDetailActivity);
     }
 
     @Override

@@ -1,13 +1,13 @@
 <resources>
     <string name="app_name">Movie Info</string>
     <string name="movie_title">Movie Title</string>
-    <string name="releas_date_label">Releas date</string>
+    <string name="release_date_label">Release date</string>
     <string name="vote_label">Rating</string>
-    <string name="overiew_label">Overview Label</string>
+    <string name="overview_label">Overview</string>
     <string name="trailer_label">Trailer</string>
     <string name="filed_load_trailer">Failed to load trailer</string>
-    <string name="overview">Minios Stuart, Kevin and Bob are recruited by Scarlet Overkill, a supper-villain who, alongside her inventor husband Herb, harches a plot to take over the world.</string>
-    <string name="releas_date">Jun 17, 2015</string>
+    <string name="overview">Minions Stuart, Kevin and Bob are recruited by Scarlet Overkill, a supper-villain who, alongside her inventor husband Herb, harches a plot to take over the world.</string>
+    <string name="release_date">Jun 17, 2015</string>
     <string name="vote">6.4</string>
     <string name="author">Andres Gomez</string>
     <string name="review_text">
@@ -18,8 +18,8 @@
     <string name="review_label">Reviews</string>
     <string name="filed_load_review">Failed to load reviews</string>
     <string name="trailer_title">Monios</string>
-    <string name="gendre_label">Gendre</string>
-    <string name="gendre">Movie gendre</string>
+    <string name="genre_label">Genre</string>
+    <string name="genre">Movie genre</string>
     <string name="ori_language_label">Original Language</string>
     <string name="ori_language">English</string>
     <string name="menu_most_popular">Most Popular</string>
