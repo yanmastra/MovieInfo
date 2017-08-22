@@ -20,6 +20,9 @@ public class Constant {
     public static final String UP_COMING = "upcoming";
     public static final String NOW_PLAYING = "now_playing";
     public static final String FAVORITES = "favorites";
+    public static final String SELECTED_CATEGORY = "selected_category";
+    public static final String LAYOUT_MANAGER = "layout_manager";
+
     public static String getMovieGenre(int id){
         switch(id){
             case 28 : return "Action";

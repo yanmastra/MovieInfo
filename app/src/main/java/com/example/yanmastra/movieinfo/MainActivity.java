@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -45,6 +46,7 @@ implements MovieAdapter.ItemClickListener{
     private String selectedCategory;
 
     @BindView(R.id.network_retry) LinearLayout llNetworkRetry;
+    private Parcelable layoutManagerSaveState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +60,16 @@ implements MovieAdapter.ItemClickListener{
         rvMovie.setAdapter(movieAdapter);
         movieAdapter.replaceAll(data);
         if(isNetworkConnected() || isWifiConnected()){
-            getDataFromAPI(Constant.POPULAR);
-            getSupportActionBar().setSubtitle(R.string.menu_most_popular);
+            if(savedInstanceState != null){
+                selectedCategory = savedInstanceState.getString(Constant.SELECTED_CATEGORY);
+                getDataFromAPI(selectedCategory);
+                setSubtitle(selectedCategory);
+                layoutManagerSaveState = savedInstanceState.getParcelable(Constant.LAYOUT_MANAGER);
+            }else {
+                selectedCategory = Constant.POPULAR;
+                getDataFromAPI(selectedCategory);
+                setSubtitle(Constant.POPULAR);
+            }
         }else {
             rvMovie.setVisibility(View.INVISIBLE);
             llNetworkRetry.setVisibility(View.VISIBLE);
@@ -108,6 +118,13 @@ implements MovieAdapter.ItemClickListener{
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(Constant.SELECTED_CATEGORY, selectedCategory);
+        outState.putParcelable(Constant.LAYOUT_MANAGER, rvMovie.getLayoutManager().onSaveInstanceState());
+    }
+
+    @Override
     public void onItemClick(MovieResults data, int position) {
         Intent startDetailActivity = new Intent(this, DetailActivity.class);
         startDetailActivity.putExtra(Constant.MOVIE_KEY, gson.toJson(data));
@@ -127,27 +144,27 @@ implements MovieAdapter.ItemClickListener{
             case R.id.action_most_popular :
                 selectedCategory = Constant.POPULAR;
                 loadData(selectedCategory);
-                getSupportActionBar().setSubtitle(R.string.menu_most_popular);
+                setSubtitle(selectedCategory);
                 return true;
             case R.id.action_top_rated :
                 selectedCategory = Constant.TOP_RATED;
                 loadData(selectedCategory);
-                getSupportActionBar().setSubtitle(R.string.menu_top_rated);
+                setSubtitle(selectedCategory);
                 return true;
             case R.id.action_up_coming :
                 selectedCategory = Constant.UP_COMING;
                 loadData(selectedCategory);
-                getSupportActionBar().setSubtitle(R.string.menu_upcoming);
+                setSubtitle(selectedCategory);
                 return true;
             case R.id.action_now_playing :
                 selectedCategory = Constant.NOW_PLAYING;
                 loadData(selectedCategory);
-                getSupportActionBar().setSubtitle(R.string.menu_now_playing);
+                setSubtitle(selectedCategory);
                 return true;
             case R.id.action_favorites :
                 selectedCategory = Constant.FAVORITES;
                 loadData(selectedCategory);
-                getSupportActionBar().setSubtitle(R.string.menu_favorites);
+                setSubtitle(selectedCategory);
                 return true;
             default: return false;
         }
@@ -175,7 +192,25 @@ implements MovieAdapter.ItemClickListener{
                 break;
         }
     }
-
+    private void setSubtitle(String selectedCategory){
+        switch (selectedCategory){
+            case Constant.POPULAR :
+                getSupportActionBar().setSubtitle(R.string.menu_most_popular);
+                break;
+            case Constant.TOP_RATED :
+                getSupportActionBar().setSubtitle(R.string.menu_top_rated);
+                break;
+            case Constant.UP_COMING :
+                getSupportActionBar().setSubtitle(R.string.menu_upcoming);
+                break;
+            case Constant.NOW_PLAYING :
+                getSupportActionBar().setSubtitle(R.string.menu_now_playing);
+                break;
+            case Constant.FAVORITES :
+                getSupportActionBar().setSubtitle(R.string.menu_favorites);
+                break;
+        }
+    }
     private boolean isNetworkConnected(){
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
