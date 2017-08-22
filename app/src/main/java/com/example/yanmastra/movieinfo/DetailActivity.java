@@ -174,7 +174,7 @@ public class DetailActivity extends AppCompatActivity {
                         if (error != null){
                             Log.e(TAG, error.getMessage());
                         }else{
-                            Log.e(TAG, "Something error hapended");
+                            Log.e(TAG, "Something error happened");
                         }
                     }
                 }
