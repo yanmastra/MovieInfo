@@ -1,6 +1,9 @@
 package com.example.yanmastra.movieinfo;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -9,6 +12,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -37,8 +42,9 @@ implements MovieAdapter.ItemClickListener{
     private Gson gson = new Gson();
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private String selectedCategory = Constant.POPULAR;
+    private String selectedCategory;
 
+    @BindView(R.id.network_retry) LinearLayout llNetworkRetry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +54,16 @@ implements MovieAdapter.ItemClickListener{
         GridLayoutManager layoutManager = new GridLayoutManager(this, gridLayoutColumns(this));
         rvMovie.setLayoutManager(layoutManager);
         rvMovie.setHasFixedSize(true);
-        //addingData();
         movieAdapter = new MovieAdapter(data, this);
         rvMovie.setAdapter(movieAdapter);
         movieAdapter.replaceAll(data);
-        getDataFromAPI(Constant.POPULAR);
-        getSupportActionBar().setSubtitle(R.string.menu_most_popular);
+        if(isNetworkConnected() || isWifiConnected()){
+            getDataFromAPI(Constant.POPULAR);
+            getSupportActionBar().setSubtitle(R.string.menu_most_popular);
+        }else {
+            rvMovie.setVisibility(View.INVISIBLE);
+            llNetworkRetry.setVisibility(View.VISIBLE);
+        }
     }
     private int gridLayoutColumns(MainActivity mainActivity){
         DisplayMetrics displayMetrics = mainActivity.getResources().getDisplayMetrics();
@@ -142,7 +152,6 @@ implements MovieAdapter.ItemClickListener{
             default: return false;
         }
     }
-
     private void loadData(String category){
         switch (category){
             case Constant.POPULAR :
@@ -165,5 +174,16 @@ implements MovieAdapter.ItemClickListener{
                 movieAdapter.replaceAll(data);
                 break;
         }
+    }
+
+    private boolean isNetworkConnected(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected();
+    }
+    private boolean isWifiConnected(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.isConnected() && (ConnectivityManager.TYPE_WIFI == networkInfo.getType());
     }
 }

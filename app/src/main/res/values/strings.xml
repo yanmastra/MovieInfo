@@ -17,7 +17,7 @@
     <string name="title_activity_detail">DetailActivity</string>
     <string name="review_label">Reviews</string>
     <string name="filed_load_review">Failed to load reviews</string>
-    <string name="trailer_title">Monios</string>
+    <string name="trailer_title">Minions</string>
     <string name="genre_label">Genre</string>
     <string name="genre">Movie genre</string>
     <string name="ori_language_label">Original Language</string>
@@ -29,4 +29,5 @@
     <string name="menu_latest">Latest</string>
     <string name="menu_upcoming">Upcoming</string>
     <string name="menu_now_playing">Now Playing</string>
+    <string name="error_message">Failed to get Movie list, please check your internet connection!.</string>
 </resources>
