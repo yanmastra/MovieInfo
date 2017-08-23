@@ -23,8 +23,8 @@ import com.android.volley.toolbox.Volley;
 import com.example.yanmastra.movieinfo.adapter.ReviewAdapter;
 import com.example.yanmastra.movieinfo.adapter.TrailerAdapter;
 import com.example.yanmastra.movieinfo.model.movies.MovieResults;
-import com.example.yanmastra.movieinfo.model.review.Reviews;
 import com.example.yanmastra.movieinfo.model.review.ReviewResults;
+import com.example.yanmastra.movieinfo.model.review.Reviews;
 import com.example.yanmastra.movieinfo.model.trailer.Trailer;
 import com.example.yanmastra.movieinfo.model.trailer.TrailerResults;
 import com.example.yanmastra.movieinfo.utilities.Constant;
@@ -79,19 +79,17 @@ public class DetailActivity extends AppCompatActivity {
             bindData();
             trailerRecyclerView();
             reviewRecyclerView();
+            
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+            });
         }else{
             Log.e(TAG, "Data is null");
         }
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
     private void trailerRecyclerView(){
         trailerAdapter = new TrailerAdapter(trailerResults);
