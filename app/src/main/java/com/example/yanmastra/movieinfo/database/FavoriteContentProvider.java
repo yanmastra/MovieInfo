@@ -16,15 +16,14 @@ import android.support.annotation.Nullable;
  */
 
 public class FavoriteContentProvider extends ContentProvider {
-    private FavpriteDBHelper dbHelper;
+    private FavoriteDBHelper dbHelper;
     public static final int FAVORITES = 100;
     public static final int FAVORITES_WITH_ID = 101;
     private static final UriMatcher uriMatcher = buildUriMatcher();
 
-
     @Override
     public boolean onCreate() {
-        dbHelper = new FavpriteDBHelper(getContext());
+        dbHelper = new FavoriteDBHelper(getContext());
         return true;
     }
 

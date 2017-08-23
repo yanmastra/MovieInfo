@@ -8,11 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by Yan Mastra on 8/22/2017.
  */
 
-public class FavpriteDBHelper extends SQLiteOpenHelper {
+public class FavoriteDBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "favorites.db";
     private static final int DATABASE_VERSION = 1;
 
-    public FavpriteDBHelper(Context context) {
+    public FavoriteDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -24,7 +24,7 @@ public class FavpriteDBHelper extends SQLiteOpenHelper {
                 + FavoriteContract.Entry.COLUMN_TITLE+" TEXT, "
                 + FavoriteContract.Entry.COLUMN_POSTER+" TEXT, "
                 + FavoriteContract.Entry.COLUMN_OVERVIEW+" TEXT, "
-                + FavoriteContract.Entry.COLUMN_RATING+" TEXT, "
+                + FavoriteContract.Entry.COLUMN_RATING+" REAL, "
                 + FavoriteContract.Entry.COLUMN_RELEASE_DATE+" TEXT, "
                 + FavoriteContract.Entry.COLUMN_BACKDROP+" TEXT, "
                 + ");";
