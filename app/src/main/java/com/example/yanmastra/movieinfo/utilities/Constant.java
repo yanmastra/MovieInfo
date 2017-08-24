@@ -16,34 +16,35 @@ public class Constant {
     public static final String VIDEOS = "/videos";
     public static final String REVIEWS = "/reviews";
     public static final String TOP_RATED = "top_rated";
-    public static final String LATEST = "latest";
     public static final String UP_COMING = "upcoming";
     public static final String NOW_PLAYING = "now_playing";
     public static final String FAVORITES = "favorites";
     public static final String SELECTED_CATEGORY = "selected_category";
     public static final String LAYOUT_MANAGER = "layout_manager";
+    public static final int LOADER_ID = 1;
+    public static final int LOADER_MAIN_ID = 2;
 
-    public static String getMovieGenre(int id){
+    public static String getMovieGenre(String id){
         switch(id){
-            case 28 : return "Action";
-            case 12 : return "Adventure";
-            case 16 : return "Animation";
-            case 35 : return "Comedy";
-            case 80 : return "Crime";
-            case 99 : return "Documentary";
-            case 18 : return "Drama";
-            case 10751 : return "Family";
-            case 14 : return "Fantasy";
-            case 36 : return "History";
-            case 27 : return "Horror";
-            case 10402 : return "Music";
-            case 9648 : return "Mystery";
-            case 10749 : return "Romance";
-            case 878 : return "Science Fiction";
-            case 10770 : return "TV Movie";
-            case 53 : return "Thriller";
-            case 10752 : return "War";
-            case 37 : return "Western";
+            case "28" : return "Action";
+            case "12" : return "Adventure";
+            case "16" : return "Animation";
+            case "35" : return "Comedy";
+            case "80" : return "Crime";
+            case "99" : return "Documentary";
+            case "18" : return "Drama";
+            case "10751" : return "Family";
+            case "14" : return "Fantasy";
+            case "36" : return "History";
+            case "27" : return "Horror";
+            case "10402" : return "Music";
+            case "648" : return "Mystery";
+            case "10749" : return "Romance";
+            case "878" : return "Science Fiction";
+            case "10770" : return "TV Movie";
+            case "53" : return "Thriller";
+            case "10752" : return "War";
+            case "37" : return "Western";
             default:return "Unknown genre";
         }
     }

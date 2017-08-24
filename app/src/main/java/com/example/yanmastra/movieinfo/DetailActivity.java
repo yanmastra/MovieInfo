@@ -1,9 +1,16 @@
 package com.example.yanmastra.movieinfo;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +29,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.yanmastra.movieinfo.adapter.ReviewAdapter;
 import com.example.yanmastra.movieinfo.adapter.TrailerAdapter;
+import com.example.yanmastra.movieinfo.database.FavoriteContract;
 import com.example.yanmastra.movieinfo.model.movies.MovieResults;
 import com.example.yanmastra.movieinfo.model.review.ReviewResults;
 import com.example.yanmastra.movieinfo.model.review.Reviews;
@@ -45,6 +53,10 @@ public class DetailActivity extends AppCompatActivity {
     private String jsonData;
     private String movieId;
     private MovieResults movieResults;
+
+    private LoaderManager.LoaderCallbacks<Cursor> loaderCallbacks;
+
+    //lanjut buat setup loader
 
     @BindView(R.id.fab) FloatingActionButton fab;
     @BindView(R.id.toolbar) Toolbar toolbar;
@@ -79,18 +91,118 @@ public class DetailActivity extends AppCompatActivity {
             bindData();
             trailerRecyclerView();
             reviewRecyclerView();
-            
+            setupLoader(this, getContentResolver(), Long.parseLong(getMovieResults(jsonData).getId()));
+            initLoader(getSupportLoaderManager());
+
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+                    if((Integer)fab.getTag() == R.drawable.ic_star_selected){
+                        unsetAsFavorite(getContentResolver(), getMovieResults(jsonData));
+                    }else{
+                        saveAsFavorite(getContentResolver(), getMovieResults(jsonData));
+                        restartLoader(getSupportLoaderManager());
+                    }
                 }
             });
         }else{
             Log.e(TAG, "Data is null");
         }
     }
+
+    private void unsetAsFavorite(ContentResolver contentResolver, MovieResults movieResults) {
+        long result = contentResolver.delete(uriWithIDBuilder(Long.parseLong(movieResults.getId())),null, null);
+        if (result > 0){
+            restartLoader(getSupportLoaderManager());
+        }
+    }
+    private MovieResults getMovieResults(String json){
+        return gson.fromJson(json, MovieResults.class);
+    }
+    private void saveAsFavorite(ContentResolver resolver, MovieResults item){
+        ContentValues cv = new ContentValues();
+        cv.put(FavoriteContract.Entry.COLUMN_MOVIE_ID, Integer.parseInt(item.getId()));
+        cv.put(FavoriteContract.Entry.COLUMN_TITLE, item.getTitle());
+        cv.put(FavoriteContract.Entry.COLUMN_BACKDROP, item.getBackdrop_path());
+        cv.put(FavoriteContract.Entry.COLUMN_POSTER, item.getPoster_path());
+        cv.put(FavoriteContract.Entry.COLUMN_RATING, item.getVote_average());
+        cv.put(FavoriteContract.Entry.COLUMN_RELEASE_DATE, item.getRelease_date());
+        cv.put(FavoriteContract.Entry.COLUMN_OVERVIEW, item.getOverview());
+        resolver.insert(FavoriteContract.Entry.CONTENT_URI, cv);
+    }
+
+    private void setupLoader(final DetailActivity detailActivity, final ContentResolver contentResolver, final Long movieId){
+        loaderCallbacks = new LoaderManager.LoaderCallbacks<Cursor>() {
+            @Override
+            public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+                return new AsyncTaskLoader<Cursor>(detailActivity) {
+                    @Override
+                    public Cursor loadInBackground() {
+                        try {
+                            return contentResolver.query(
+                                    uriWithIDBuilder(movieId),
+                                    null,
+                                    null,
+                                    null,
+                                    null
+                            );
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    protected void onStartLoading() {
+                        forceLoad();
+                    }
+                };
+            }
+
+            @Override
+            public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+                setFavoriteButton(cursor.getCount());
+            }
+
+            @Override
+            public void onLoaderReset(Loader<Cursor> loader) {
+            }
+        };
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        restartLoader(getSupportLoaderManager());
+    }
+
+    private void restartLoader(LoaderManager supportLoaderManager) {
+        supportLoaderManager.restartLoader(Constant.LOADER_ID, null, loaderCallbacks);
+    }
+    private void initLoader(LoaderManager loaderManager){
+        loaderManager.initLoader(Constant.LOADER_ID, null, loaderCallbacks);
+    }
+    private Uri uriWithIDBuilder(Long movieId) {
+        return ContentUris.withAppendedId(FavoriteContract.Entry.CONTENT_URI, movieId);
+    }
+    private void setFavoriteButton(int count) {
+        if(count > 0){
+            onStatusReceived(true);
+        }else{
+            onStatusReceived(false);
+        }
+    }
+    private void onStatusReceived(boolean isFavorite) {
+        if(isFavorite){
+            fab.setImageResource(R.drawable.ic_star_selected);
+            fab.setTag(R.drawable.ic_star_selected);
+        }else {
+            fab.setImageResource(R.drawable.ic_star_unselected);
+            fab.setTag(R.drawable.ic_star_unselected);
+        }
+    }
+
+
     private void trailerRecyclerView(){
         trailerAdapter = new TrailerAdapter(trailerResults);
         rvTrailer.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -200,7 +312,7 @@ public class DetailActivity extends AppCompatActivity {
         oriLanguage.setText(movieResults.getOriginal_language());
         String genre = "";
         int i=1;
-        for (int genId : movieResults.getGenre_ids()) {
+        for (String genId : movieResults.getGenre_ids()) {
             if(i==1) {
                 genre += Constant.getMovieGenre(genId);
             }else{

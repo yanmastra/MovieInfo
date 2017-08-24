@@ -1,11 +1,16 @@
 package com.example.yanmastra.movieinfo;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +28,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.yanmastra.movieinfo.adapter.MovieAdapter;
+import com.example.yanmastra.movieinfo.database.FavoriteContract;
 import com.example.yanmastra.movieinfo.model.movies.MovieResults;
 import com.example.yanmastra.movieinfo.model.movies.Movies;
 import com.example.yanmastra.movieinfo.utilities.Constant;
@@ -44,9 +50,12 @@ implements MovieAdapter.ItemClickListener{
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private String selectedCategory;
+    private String categorySelected;
 
     @BindView(R.id.network_retry) LinearLayout llNetworkRetry;
     private Parcelable layoutManagerSaveState;
+    private LoaderManager.LoaderCallbacks<Cursor> loaderCallbacks;
+    private Cursor favorite = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +67,7 @@ implements MovieAdapter.ItemClickListener{
         rvMovie.setHasFixedSize(true);
         movieAdapter = new MovieAdapter(data, this);
         rvMovie.setAdapter(movieAdapter);
-        movieAdapter.replaceAll(data);
+
         if(isNetworkConnected() || isWifiConnected()){
             if(savedInstanceState != null){
                 selectedCategory = savedInstanceState.getString(Constant.SELECTED_CATEGORY);
@@ -67,14 +76,115 @@ implements MovieAdapter.ItemClickListener{
                 layoutManagerSaveState = savedInstanceState.getParcelable(Constant.LAYOUT_MANAGER);
             }else {
                 selectedCategory = Constant.POPULAR;
-                getDataFromAPI(selectedCategory);
                 setSubtitle(Constant.POPULAR);
+            }
+            if(selectedCategory.equals(Constant.FAVORITES)){
+                categorySelected = selectedCategory;
+                setupLoader(this, getContentResolver());
+                restartLoader(getSupportLoaderManager());
+            }else{
+                loadData(selectedCategory);
             }
         }else {
             rvMovie.setVisibility(View.INVISIBLE);
             llNetworkRetry.setVisibility(View.VISIBLE);
         }
+
     }
+
+    private void setupLoader(final MainActivity mainActivity, final ContentResolver contentResolver){
+        loaderCallbacks = new LoaderManager.LoaderCallbacks<Cursor>() {
+            @Override
+            public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+                return new AsyncTaskLoader<Cursor>(mainActivity) {
+                    @Override
+                    public Cursor loadInBackground() {
+                        try {
+                            return contentResolver.query(
+                                    FavoriteContract.Entry.CONTENT_URI,
+                                    null,
+                                    null,
+                                    null,
+                                    null
+                            );
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    protected void onStartLoading() {
+                        if(categorySelected.equals(Constant.FAVORITES)){
+                            forceLoad();
+                        }
+                    }
+                };
+            }
+
+            @Override
+            public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+                Log.d("Favorite found : ", ""+data.getCount());
+                favorite = data;
+                generateFromCursor(favorite);
+            }
+
+            @Override
+            public void onLoaderReset(Loader<Cursor> loader) {
+
+            }
+        };
+    }
+
+    private void generateFromCursor(Cursor cursor) {
+        List<MovieResults> results = new ArrayList<>();
+        cursor.moveToPosition(-1);
+        try {
+            while(cursor.moveToNext()){
+                MovieResults movieResults = new MovieResults();
+                movieResults.setPoster_path(
+                        cursor.getString(cursor.getColumnIndex(FavoriteContract.Entry.COLUMN_POSTER))
+                );
+                movieResults.setTitle(
+                        cursor.getString(cursor.getColumnIndex(FavoriteContract.Entry.COLUMN_TITLE))
+                );
+                movieResults.setRelease_date(
+                        cursor.getString(cursor.getColumnIndex(FavoriteContract.Entry.COLUMN_RELEASE_DATE))
+                );
+                movieResults.setOverview(
+                        cursor.getString(cursor.getColumnIndex(FavoriteContract.Entry.COLUMN_OVERVIEW))
+                );
+                movieResults.setVote_average(
+                        cursor.getDouble(cursor.getColumnIndex(FavoriteContract.Entry.COLUMN_RATING))
+                );
+                movieResults.setId(
+                        cursor.getString(cursor.getColumnIndex(FavoriteContract.Entry.COLUMN_MOVIE_ID))
+                );
+                movieResults.setBackdrop_path(
+                        cursor.getString(cursor.getColumnIndex(FavoriteContract.Entry.COLUMN_BACKDROP))
+                );
+                movieResults.setGenre_ids(",");
+                results.add(movieResults);
+            }
+        }finally {
+            cursor.close();
+        }
+        onDataReceived(results, 1);
+    }
+
+    private void onDataReceived(List<MovieResults> results, int page) {
+        Log.w(TAG, "dat receive : "+results);
+        movieAdapter.replaceAll(results);
+        if(layoutManagerSaveState != null){
+            rvMovie.getLayoutManager().onRestoreInstanceState(layoutManagerSaveState);
+        }
+    }
+
+    private void restartLoader(LoaderManager supportLoaderManager) {
+        supportLoaderManager.restartLoader(Constant.LOADER_MAIN_ID, null, loaderCallbacks);
+    }
+
+
     private int gridLayoutColumns(MainActivity mainActivity){
         DisplayMetrics displayMetrics = mainActivity.getResources().getDisplayMetrics();
         float width = displayMetrics.widthPixels /displayMetrics.density;
@@ -163,10 +273,13 @@ implements MovieAdapter.ItemClickListener{
                 return true;
             case R.id.action_favorites :
                 selectedCategory = Constant.FAVORITES;
-                loadData(selectedCategory);
                 setSubtitle(selectedCategory);
+                categorySelected = selectedCategory;
+                setupLoader(this, getContentResolver());
+                Log.w(TAG, "when select Favorite "+getContentResolver());
+                restartLoader(getSupportLoaderManager());
                 return true;
-            default: return false;
+            default: return super.onOptionsItemSelected(item);
         }
     }
     private void loadData(String category){
@@ -186,9 +299,6 @@ implements MovieAdapter.ItemClickListener{
             case Constant.NOW_PLAYING :
                 movieAdapter.replaceAll(data);
                 getDataFromAPI(category);
-                break;
-            case Constant.FAVORITES :
-                movieAdapter.replaceAll(data);
                 break;
         }
     }

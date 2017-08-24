@@ -14,7 +14,7 @@ public class MovieResults {
     private String poster_path;
     private String original_language;
     private String original_title;
-    private int[] genre_ids;
+    private String[] genre_ids;
     private String backdrop_path;
     private boolean adult;
     private String overview;
@@ -92,11 +92,11 @@ public class MovieResults {
         this.original_title = original_title;
     }
 
-    public int[] getGenre_ids() {
+    public String[] getGenre_ids() {
         return genre_ids;
     }
-
-    public void setGenre_ids(int[] genre_ids) {
+    //override
+    public void setGenre_ids(String[] genre_ids) {
         this.genre_ids = genre_ids;
     }
 
@@ -130,5 +130,9 @@ public class MovieResults {
 
     public void setRelease_date(String release_date) {
         this.release_date = release_date;
+    }
+
+    public void setGenre_ids(String string) {
+        this.genre_ids = string.split(", ");
     }
 }

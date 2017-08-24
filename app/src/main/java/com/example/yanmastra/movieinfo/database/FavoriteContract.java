@@ -8,7 +8,7 @@ import android.provider.BaseColumns;
  */
 
 public class FavoriteContract {
-    public static final String AUTHORITY = "com.example.ynmastra.movieinfo";
+    public static final String AUTHORITY = "com.example.yanmastra.movieinfo";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     public static final String PATH_FAVORITES = "favorites";
     public static final class Entry implements BaseColumns{
@@ -20,6 +20,8 @@ public class FavoriteContract {
         public static final String COLUMN_RATING = "rating";
         public static final String COLUMN_RELEASE_DATE = "release_date";
         public static final String COLUMN_BACKDROP = "backdrop";
+        public static final String COLUMN_GENRE = "genre_ids";
+        public static final String COLUMN_LANGUAGE = "original_language";
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_FAVORITES).build();
     }
 }
