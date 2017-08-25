@@ -71,7 +71,7 @@ implements MovieAdapter.ItemClickListener{
         if(isNetworkConnected() || isWifiConnected()){
             if(savedInstanceState != null){
                 selectedCategory = savedInstanceState.getString(Constant.SELECTED_CATEGORY);
-                getDataFromAPI(selectedCategory);
+                if(!selectedCategory.equals(Constant.FAVORITES)){getDataFromAPI(selectedCategory);}
                 setSubtitle(selectedCategory);
                 layoutManagerSaveState = savedInstanceState.getParcelable(Constant.LAYOUT_MANAGER);
             }else {
@@ -216,7 +216,7 @@ implements MovieAdapter.ItemClickListener{
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         if (error != null){
-                            Log.e(TAG, error.getMessage());
+                            //Log.e(TAG, error.getMessage());
                         }else {
                             Log.e(TAG, "Something error happened");
                         }

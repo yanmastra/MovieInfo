@@ -3,6 +3,7 @@ package com.example.yanmastra.movieinfo;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,7 +38,7 @@ import com.example.yanmastra.movieinfo.model.trailer.Trailer;
 import com.example.yanmastra.movieinfo.model.trailer.TrailerResults;
 import com.example.yanmastra.movieinfo.utilities.Constant;
 import com.example.yanmastra.movieinfo.utilities.DateFormatter;
-import com.example.yanmastra.movieinfo.utilities.ImageUrlBuilder;
+import com.example.yanmastra.movieinfo.utilities.UrlBuilder;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
@@ -47,7 +48,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements TrailerAdapter.TrailerItemClick{
     private static final String TAG = DetailActivity.class.getSimpleName();
     private Gson gson = new Gson();
     private String jsonData;
@@ -202,9 +203,8 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-
     private void trailerRecyclerView(){
-        trailerAdapter = new TrailerAdapter(trailerResults);
+        trailerAdapter = new TrailerAdapter(trailerResults, this);
         rvTrailer.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         rvTrailer.setHasFixedSize(true);
         rvTrailer.setAdapter(trailerAdapter);
@@ -297,12 +297,12 @@ public class DetailActivity extends AppCompatActivity {
         parentDetail.setVisibility(View.VISIBLE);
         getSupportActionBar().setTitle(movieResults.getTitle());
         Picasso.with(this)
-                .load(ImageUrlBuilder.getBackdropUrl(movieResults.getBackdrop_path()))
+                .load(UrlBuilder.getBackdropUrl(movieResults.getBackdrop_path()))
                 .placeholder(R.drawable.ic_local_movie)
                 .error(R.drawable.ic_error)
                 .into(ivBackDrop);
         Picasso.with(this)
-                .load(ImageUrlBuilder.getPosterUrl(movieResults.getPoster_path()))
+                .load(UrlBuilder.getPosterUrl(movieResults.getPoster_path()))
                 .placeholder(R.drawable.ic_local_movie)
                 .error(R.drawable.ic_error)
                 .into(ivPoster);
@@ -326,5 +326,14 @@ public class DetailActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_detail, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public void onTrailerClick(TrailerResults results, int position) {
+        Uri video = Uri.parse(UrlBuilder.getTrailerYoutubeUrl(results.getKey()));
+        Intent intent = new Intent(Intent.ACTION_VIEW, video);
+        if(intent.resolveActivity(getPackageManager()) != null){
+            startActivity(intent);
+        }
     }
 }

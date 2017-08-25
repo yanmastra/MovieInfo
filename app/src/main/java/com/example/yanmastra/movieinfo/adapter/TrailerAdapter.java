@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.example.yanmastra.movieinfo.R;
 import com.example.yanmastra.movieinfo.model.trailer.TrailerResults;
-import com.example.yanmastra.movieinfo.utilities.ImageUrlBuilder;
+import com.example.yanmastra.movieinfo.utilities.UrlBuilder;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -25,9 +25,15 @@ import butterknife.ButterKnife;
 
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHolder>{
     List<TrailerResults> data = new ArrayList<>();
+    private final TrailerItemClick trailerItemClick;
 
-    public TrailerAdapter(List<TrailerResults> data) {
+    public TrailerAdapter(List<TrailerResults> data, TrailerItemClick trailerItemClick) {
+        this.trailerItemClick = trailerItemClick;
         this.data = data;
+    }
+
+    public interface TrailerItemClick{
+        void onTrailerClick(TrailerResults results, int position);
     }
 
     @Override
@@ -39,7 +45,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
 
     @Override
     public void onBindViewHolder(TrailerViewHolder holder, int position) {
-        holder.bind(data.get(position));
+        holder.bind(data.get(position), position);
     }
 
     @Override
@@ -55,13 +61,19 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-        public void bind(TrailerResults data){
+        public void bind(final TrailerResults data, final int position){
             trailerName.setText(data.getName());
             trailerTitle.setText(data.getType());
             Picasso.with(itemView.getContext())
-                    .load(ImageUrlBuilder.getTrailerThumbnailUrl(data.getKey()))
+                    .load(UrlBuilder.getTrailerThumbnailUrl(data.getKey()))
                     .placeholder(R.drawable.ic_local_movie)
                     .error(R.drawable.ic_error).into(ivTrailer);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    trailerItemClick.onTrailerClick(data, position);
+                }
+            });
         }
     }
 }

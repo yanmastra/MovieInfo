@@ -9,7 +9,7 @@ import android.widget.ImageView;
 
 import com.example.yanmastra.movieinfo.R;
 import com.example.yanmastra.movieinfo.model.movies.MovieResults;
-import com.example.yanmastra.movieinfo.utilities.ImageUrlBuilder;
+import com.example.yanmastra.movieinfo.utilities.UrlBuilder;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         public void bind(final MovieResults data, final int position){
             //txt_movie_items.setText(data.getTitle());
             Picasso.with(itemView.getContext())
-                    .load(ImageUrlBuilder.getMovieItemsUrl(data.getPoster_path()))
+                    .load(UrlBuilder.getMovieItemsUrl(data.getPoster_path()))
                     .placeholder(R.drawable.ic_local_movie)
                     .error(R.drawable.ic_error).into(img_movie_items);
             itemView.setOnClickListener(new View.OnClickListener() {
