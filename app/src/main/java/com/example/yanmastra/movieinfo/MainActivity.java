@@ -8,10 +8,13 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -20,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -41,21 +45,32 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
-implements MovieAdapter.ItemClickListener{
+implements MovieAdapter.ItemClickListener, SwipeRefreshLayout.OnRefreshListener{
     @BindView(R.id.rv_movie) RecyclerView rvMovie;
     private List<MovieResults> data = new ArrayList<>();
+    private Movies movies;
     private MovieAdapter movieAdapter;
 
     private Gson gson = new Gson();
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private String selectedCategory;
+    private String selectedCategory = Constant.POPULAR;
     private String categorySelected;
+    private static int currentPage =1;
 
     @BindView(R.id.network_retry) LinearLayout llNetworkRetry;
     private Parcelable layoutManagerSaveState;
     private LoaderManager.LoaderCallbacks<Cursor> loaderCallbacks;
     private Cursor favorite = null;
+
+    @BindView(R.id.fab_next)
+    FloatingActionButton fab_next;
+    @BindView(R.id.fab_previous)
+    FloatingActionButton fab_previous;
+    @BindView(R.id.page_info)
+    CardView page_info;
+    @BindView(R.id.tv_page_info)
+    TextView tv_page_info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,14 +84,18 @@ implements MovieAdapter.ItemClickListener{
         rvMovie.setAdapter(movieAdapter);
 
         if(isNetworkConnected() || isWifiConnected()){
+            resetPage();
             if(savedInstanceState != null){
                 selectedCategory = savedInstanceState.getString(Constant.SELECTED_CATEGORY);
-                if(!selectedCategory.equals(Constant.FAVORITES)){getDataFromAPI(selectedCategory);}
+                currentPage = savedInstanceState.getInt("current_page");
+                Log.w(TAG, "ini saved page = "+savedInstanceState.getInt(Constant.CURRENT_PAGE_KEY));
+                if(!selectedCategory.equals(Constant.FAVORITES)){getDataFromAPI(selectedCategory, currentPage);}
                 setSubtitle(selectedCategory);
                 layoutManagerSaveState = savedInstanceState.getParcelable(Constant.LAYOUT_MANAGER);
             }else {
                 selectedCategory = Constant.POPULAR;
                 setSubtitle(Constant.POPULAR);
+                resetPage();
             }
             if(selectedCategory.equals(Constant.FAVORITES)){
                 categorySelected = selectedCategory;
@@ -85,11 +104,42 @@ implements MovieAdapter.ItemClickListener{
             }else{
                 loadData(selectedCategory);
             }
-        }else {
-            rvMovie.setVisibility(View.INVISIBLE);
-            llNetworkRetry.setVisibility(View.VISIBLE);
-        }
 
+            //paging
+            setPageInfo(currentPage);
+            fab_next.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(currentPage < movies.getTotal_pages()){
+                        currentPage +=1;
+                        loadData(selectedCategory);
+                        setPageInfo(currentPage);
+                    }
+                }
+            });
+            fab_previous.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(currentPage > 1){
+                        currentPage -= 1;
+                        loadData(selectedCategory);
+                        setPageInfo(currentPage);
+                    }
+                }
+            });
+        }else {
+            if(selectedCategory.equals(Constant.FAVORITES)){
+                categorySelected = selectedCategory;
+                setupLoader(this, getContentResolver());
+                restartLoader(getSupportLoaderManager());
+                rvMovie.setVisibility(View.VISIBLE);
+                llNetworkRetry.setVisibility(View.INVISIBLE);
+            }else{
+                rvMovie.setVisibility(View.INVISIBLE);
+                llNetworkRetry.setVisibility(View.VISIBLE);
+                showFabPaging(false);
+            }
+        }
     }
 
     private void setupLoader(final MainActivity mainActivity, final ContentResolver contentResolver){
@@ -197,9 +247,9 @@ implements MovieAdapter.ItemClickListener{
         int columns = (int) (width/120);
         return columns;
     }
-    private void getDataFromAPI(String category){
+    private void getDataFromAPI(String category, int page){
         RequestQueue requestQueue = Volley.newRequestQueue(this);
-        String url = Constant.API_URL + category + Constant.PARAM_API_KEY + Constant.API_KEY;
+        String url = Constant.API_URL + category + Constant.PARAM_API_KEY + Constant.API_KEY + Constant.PARAM_PAGE + page;
         StringRequest stringRequest = new StringRequest(
                 Request.Method.GET,
                 url,
@@ -207,7 +257,7 @@ implements MovieAdapter.ItemClickListener{
                     @Override
                     public void onResponse(String response) {
                         try {
-                            Movies movies = gson.fromJson(response, Movies.class);
+                            movies = gson.fromJson(response, Movies.class);
                             data.clear();
                             for (MovieResults items : movies.getResults()){
                                 data.add(items);
@@ -237,6 +287,8 @@ implements MovieAdapter.ItemClickListener{
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(Constant.SELECTED_CATEGORY, selectedCategory);
+        Log.w(TAG, "page when saving = "+currentPage);
+        outState.putInt("current_page", currentPage);
         outState.putParcelable(Constant.LAYOUT_MANAGER, rvMovie.getLayoutManager().onSaveInstanceState());
     }
 
@@ -259,31 +311,39 @@ implements MovieAdapter.ItemClickListener{
         switch (itemId){
             case R.id.action_most_popular :
                 selectedCategory = Constant.POPULAR;
+                resetPage();
                 loadData(selectedCategory);
                 setSubtitle(selectedCategory);
+                showFabPaging(true);
                 return true;
             case R.id.action_top_rated :
                 selectedCategory = Constant.TOP_RATED;
+                resetPage();
                 loadData(selectedCategory);
                 setSubtitle(selectedCategory);
+                showFabPaging(true);
                 return true;
             case R.id.action_up_coming :
                 selectedCategory = Constant.UP_COMING;
+                resetPage();
                 loadData(selectedCategory);
                 setSubtitle(selectedCategory);
+                showFabPaging(true);
                 return true;
             case R.id.action_now_playing :
                 selectedCategory = Constant.NOW_PLAYING;
+                resetPage();
                 loadData(selectedCategory);
                 setSubtitle(selectedCategory);
+                showFabPaging(true);
                 return true;
             case R.id.action_favorites :
                 selectedCategory = Constant.FAVORITES;
                 setSubtitle(selectedCategory);
                 categorySelected = selectedCategory;
                 setupLoader(this, getContentResolver());
-                Log.w(TAG, "when select Favorite "+getContentResolver());
                 restartLoader(getSupportLoaderManager());
+                showFabPaging(false);
                 return true;
             default: return super.onOptionsItemSelected(item);
         }
@@ -292,19 +352,19 @@ implements MovieAdapter.ItemClickListener{
         switch (category){
             case Constant.POPULAR :
                 movieAdapter.replaceAll(data);
-                getDataFromAPI(Constant.POPULAR);
+                getDataFromAPI(category, currentPage);
                 break;
             case Constant.TOP_RATED :
                 movieAdapter.replaceAll(data);
-                getDataFromAPI(category);
+                getDataFromAPI(category, currentPage);
                 break;
             case Constant.UP_COMING :
                 movieAdapter.replaceAll(data);
-                getDataFromAPI(category);
+                getDataFromAPI(category, currentPage);
                 break;
             case Constant.NOW_PLAYING :
                 movieAdapter.replaceAll(data);
-                getDataFromAPI(category);
+                getDataFromAPI(category, currentPage);
                 break;
         }
     }
@@ -336,5 +396,33 @@ implements MovieAdapter.ItemClickListener{
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected() && (ConnectivityManager.TYPE_WIFI == networkInfo.getType());
+    }
+
+    @Override
+    public void onRefresh() {
+        if (selectedCategory.equals(Constant.FAVORITES)) {
+            restartLoader(getSupportLoaderManager());
+        } else {
+            resetPage();
+            loadData(selectedCategory);
+        }
+    }
+    private void showFabPaging(boolean show){
+        if(show){
+            fab_next.setVisibility(View.VISIBLE);
+            fab_previous.setVisibility(View.VISIBLE);
+            page_info.setVisibility(View.VISIBLE);
+        }else {
+            fab_next.setVisibility(View.INVISIBLE);
+            fab_previous.setVisibility(View.INVISIBLE);
+            page_info.setVisibility(View.INVISIBLE);
+        }
+    }
+    private void setPageInfo(int page) {
+        tv_page_info.setText((Constant.PAGE_INFO_LABEL + page));
+    }
+    private void resetPage(){
+        currentPage = 1;
+        setPageInfo(currentPage);
     }
 }

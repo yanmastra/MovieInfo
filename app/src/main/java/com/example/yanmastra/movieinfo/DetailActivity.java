@@ -369,7 +369,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         }
         String info    = "";
         info+= "\nGenre ids : "+genre;
-        info+= "\nRelease Date : "+movieResults.getRelease_date();
+        info+= "\nRelease Date : "+DateFormatter.getReadableDate(movieResults.getRelease_date());
         info+= "\nRating : "+movieResults.getVote_average();
         info+= "\nLanguage : "+movieResults.getOriginal_language();
         String overview = "\nOverview :\n"+movieResults.getOverview();

@@ -26,8 +26,7 @@
                 android:layout_weight="0.35"
                 android:scaleType="fitCenter"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                tools:src="@drawable/port_minions"/>
+                android:layout_height="match_parent"/>
             <LinearLayout
                 android:orientation="vertical"
                 android:paddingLeft="8dp"

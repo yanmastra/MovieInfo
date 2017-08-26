@@ -23,6 +23,10 @@ public class Constant {
     public static final String LAYOUT_MANAGER = "layout_manager";
     public static final int LOADER_ID = 1;
     public static final int LOADER_MAIN_ID = 2;
+    public static final String PARAM_PAGE = "&page=";
+    public static final String PAGE_INFO_LABEL = "Page : ";
+    public static final String CURRENT_PAGE_KEY = "current_page";
+    public static final String DB_NAME = "movie_info.db";
 
     public static String getMovieGenre(String id){
         switch(id){

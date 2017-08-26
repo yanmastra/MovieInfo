@@ -30,4 +30,5 @@
     <string name="menu_upcoming">Upcoming</string>
     <string name="menu_now_playing">Now Playing</string>
     <string name="error_message">Failed to get Movie list, please check your internet connection!.</string>
+    <string name="page_label">Page : 767328</string>
 </resources>

@@ -4,12 +4,14 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.yanmastra.movieinfo.utilities.Constant;
+
 /**
  * Created by Yan Mastra on 8/22/2017.
  */
 
 public class FavoriteDBHelper extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "favorites.db";
+    private static final String DATABASE_NAME = Constant.DB_NAME;
     private static final int DATABASE_VERSION = 1;
 
     public FavoriteDBHelper(Context context) {
