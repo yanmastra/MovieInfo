@@ -18,6 +18,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -129,6 +130,18 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         cv.put(FavoriteContract.Entry.COLUMN_RATING, item.getVote_average());
         cv.put(FavoriteContract.Entry.COLUMN_RELEASE_DATE, item.getRelease_date());
         cv.put(FavoriteContract.Entry.COLUMN_OVERVIEW, item.getOverview());
+        String genre = null;
+        int i =0;
+        for(String gen : movieResults.getGenre_ids()){
+            if(i==0){
+                genre = gen;
+            }else {
+                genre += ", "+gen;
+            }
+            i++;
+        }
+        cv.put(FavoriteContract.Entry.COLUMN_GENRE, genre);
+        cv.put(FavoriteContract.Entry.COLUMN_LANGUAGE, item.getOriginal_language());
         resolver.insert(FavoriteContract.Entry.CONTENT_URI, cv);
     }
 
@@ -326,6 +339,42 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_detail, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.action_setting){
+            Intent share = new Intent();
+            share.setAction(Intent.ACTION_SEND);
+            share.putExtra(Intent.EXTRA_TEXT, detailInfoMovie());
+            share.setType("text/plain");
+            startActivity(share);
+        }
+        return true;
+    }
+    private String detailInfoMovie(){
+        String data;
+        String id      = "Id : "+movieResults.getId();
+        String title   = "\nTitle : " + movieResults.getTitle();
+        String genre = "";
+        int i =0;
+        for(String gen : movieResults.getGenre_ids()){
+            if(i==0){
+                genre += Constant.getMovieGenre(gen);
+            }else {
+                genre += ", "+Constant.getMovieGenre(gen);
+            }
+            i++;
+        }
+        String info    = "";
+        info+= "\nGenre ids : "+genre;
+        info+= "\nRelease Date : "+movieResults.getRelease_date();
+        info+= "\nRating : "+movieResults.getVote_average();
+        info+= "\nLanguage : "+movieResults.getOriginal_language();
+        String overview = "\nOverview :\n"+movieResults.getOverview();
+        data = id+title+info+overview;
+        return data;
     }
 
     @Override

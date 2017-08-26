@@ -95,9 +95,12 @@ public class MovieResults {
     public String[] getGenre_ids() {
         return genre_ids;
     }
-    //override
+
     public void setGenre_ids(String[] genre_ids) {
         this.genre_ids = genre_ids;
+    }
+    public void setGenre_ids(String string) {
+        this.genre_ids = string.split(", ");
     }
 
     public String getBackdrop_path() {
@@ -130,9 +133,5 @@ public class MovieResults {
 
     public void setRelease_date(String release_date) {
         this.release_date = release_date;
-    }
-
-    public void setGenre_ids(String string) {
-        this.genre_ids = string.split(", ");
     }
 }

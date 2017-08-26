@@ -163,7 +163,13 @@ implements MovieAdapter.ItemClickListener{
                 movieResults.setBackdrop_path(
                         cursor.getString(cursor.getColumnIndex(FavoriteContract.Entry.COLUMN_BACKDROP))
                 );
-                movieResults.setGenre_ids(",");
+                movieResults.setGenre_ids(
+                        cursor.getString(cursor.getColumnIndex(FavoriteContract.Entry.COLUMN_GENRE))
+                );
+                movieResults.setOriginal_language(
+                        cursor.getString(cursor.getColumnIndex(FavoriteContract.Entry.COLUMN_LANGUAGE))
+                );
+                Log.w(TAG, "genre ids : "+cursor.getString(cursor.getColumnIndex(FavoriteContract.Entry.COLUMN_GENRE)));
                 results.add(movieResults);
             }
         }finally {
