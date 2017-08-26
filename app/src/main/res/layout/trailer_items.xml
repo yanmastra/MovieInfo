@@ -10,7 +10,7 @@
     app:cardMaxElevation="3dp"
     app:contentPadding="6dp"
     app:cardUseCompatPadding="true"
-    app:cardBackgroundColor="@color/primary_light">
+    app:cardBackgroundColor="#fff">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"

@@ -244,7 +244,7 @@ implements MovieAdapter.ItemClickListener, SwipeRefreshLayout.OnRefreshListener{
     private int gridLayoutColumns(MainActivity mainActivity){
         DisplayMetrics displayMetrics = mainActivity.getResources().getDisplayMetrics();
         float width = displayMetrics.widthPixels /displayMetrics.density;
-        int columns = (int) (width/120);
+        int columns = (int) (width/180);
         return columns;
     }
     private void getDataFromAPI(String category, int page){
