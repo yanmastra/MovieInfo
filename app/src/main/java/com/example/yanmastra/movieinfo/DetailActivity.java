@@ -3,11 +3,8 @@ package com.example.yanmastra.movieinfo;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -287,7 +284,6 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
                             Reviews reviews = gson.fromJson(response, Reviews.class);
                             for (ReviewResults result : reviews.getResults()) {
                                 reviewResults.add(result);
-                                Log.e(TAG, "Content req: "+result.getContent());
                             }
                             trailerAdapter.notifyDataSetChanged();
                             Log.e(TAG, "ini reviews "+response);
@@ -389,15 +385,5 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
         if(intent.resolveActivity(getPackageManager()) != null){
             startActivity(intent);
         }
-    }
-    private boolean isNetworkConnected(){
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
-    private boolean isWifiConnected(){
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected() && (ConnectivityManager.TYPE_WIFI == networkInfo.getType());
     }
 }

@@ -60,9 +60,4 @@ public class ReviewAdapter  extends RecyclerView.Adapter<ReviewAdapter.ReviewVie
             Log.e(TAG, "ini Adapter content : "+result.getContent());
         }
     }
-    public void replaceAll(List<ReviewResults> list){
-        this.data.clear();
-        this.data = list;
-        notifyDataSetChanged();
-    }
 }

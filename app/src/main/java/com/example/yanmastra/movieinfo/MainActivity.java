@@ -423,4 +423,9 @@ implements MovieAdapter.ItemClickListener, SwipeRefreshLayout.OnRefreshListener{
         currentPage = 1;
         setPageInfo(currentPage);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }
