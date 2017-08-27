@@ -27,6 +27,10 @@ public class Constant {
     public static final String PAGE_INFO_LABEL = "Page : ";
     public static final String CURRENT_PAGE_KEY = "current_page";
     public static final String DB_NAME = "movie_info.db";
+    public static final String NO_TRAILER = "No Trailer";
+    public static final String FAILED_LOAD_TRAILER = "Failed to load Trailer";
+    public static final String NO_REVIEW = "No Review";
+    public static final String FAILED_LOAD_REVIEW = "Failed to load Review";
 
     public static String getMovieGenre(String id){
         switch(id){

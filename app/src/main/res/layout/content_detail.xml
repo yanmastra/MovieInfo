@@ -139,7 +139,6 @@
                 android:id="@+id/rv_trailers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
             </android.support.v7.widget.RecyclerView>
         </LinearLayout>
         <LinearLayout
@@ -166,12 +165,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/filed_load_review"/>
-
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_reviews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
             </android.support.v7.widget.RecyclerView>
 
         </LinearLayout>

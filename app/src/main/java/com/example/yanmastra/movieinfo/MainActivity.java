@@ -63,14 +63,10 @@ implements MovieAdapter.ItemClickListener, SwipeRefreshLayout.OnRefreshListener{
     private LoaderManager.LoaderCallbacks<Cursor> loaderCallbacks;
     private Cursor favorite = null;
 
-    @BindView(R.id.fab_next)
-    FloatingActionButton fab_next;
-    @BindView(R.id.fab_previous)
-    FloatingActionButton fab_previous;
-    @BindView(R.id.page_info)
-    CardView page_info;
-    @BindView(R.id.tv_page_info)
-    TextView tv_page_info;
+    @BindView(R.id.fab_next) FloatingActionButton fab_next;
+    @BindView(R.id.fab_previous) FloatingActionButton fab_previous;
+    @BindView(R.id.page_info) CardView page_info;
+    @BindView(R.id.tv_page_info) TextView tv_page_info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +79,7 @@ implements MovieAdapter.ItemClickListener, SwipeRefreshLayout.OnRefreshListener{
         movieAdapter = new MovieAdapter(data, this);
         rvMovie.setAdapter(movieAdapter);
 
-        if(isNetworkConnected() || isWifiConnected()){
+        if(isConnectionAvailable()){
             resetPage();
             if(savedInstanceState != null){
                 selectedCategory = savedInstanceState.getString(Constant.SELECTED_CATEGORY);
@@ -97,13 +93,7 @@ implements MovieAdapter.ItemClickListener, SwipeRefreshLayout.OnRefreshListener{
                 setSubtitle(Constant.POPULAR);
                 resetPage();
             }
-            if(selectedCategory.equals(Constant.FAVORITES)){
-                categorySelected = selectedCategory;
-                setupLoader(this, getContentResolver());
-                restartLoader(getSupportLoaderManager());
-            }else{
-                loadData(selectedCategory);
-            }
+            loadData(selectedCategory);
 
             //paging
             setPageInfo(currentPage);
@@ -128,17 +118,17 @@ implements MovieAdapter.ItemClickListener, SwipeRefreshLayout.OnRefreshListener{
                 }
             });
         }else {
-            if(selectedCategory.equals(Constant.FAVORITES)){
-                categorySelected = selectedCategory;
-                setupLoader(this, getContentResolver());
-                restartLoader(getSupportLoaderManager());
-                rvMovie.setVisibility(View.VISIBLE);
-                llNetworkRetry.setVisibility(View.INVISIBLE);
-            }else{
-                rvMovie.setVisibility(View.INVISIBLE);
-                llNetworkRetry.setVisibility(View.VISIBLE);
-                showFabPaging(false);
+            resetPage();
+            if(savedInstanceState != null){
+                selectedCategory = savedInstanceState.getString(Constant.SELECTED_CATEGORY);
+                currentPage = savedInstanceState.getInt("current_page");
+                setSubtitle(selectedCategory);
+            }else {
+                selectedCategory = Constant.POPULAR;
+                setSubtitle(selectedCategory);
             }
+            loadData(selectedCategory);
+            showFabPaging(false);
         }
     }
 
@@ -313,37 +303,25 @@ implements MovieAdapter.ItemClickListener, SwipeRefreshLayout.OnRefreshListener{
                 selectedCategory = Constant.POPULAR;
                 resetPage();
                 loadData(selectedCategory);
-                setSubtitle(selectedCategory);
-                showFabPaging(true);
                 return true;
             case R.id.action_top_rated :
                 selectedCategory = Constant.TOP_RATED;
                 resetPage();
                 loadData(selectedCategory);
-                setSubtitle(selectedCategory);
-                showFabPaging(true);
                 return true;
             case R.id.action_up_coming :
                 selectedCategory = Constant.UP_COMING;
                 resetPage();
                 loadData(selectedCategory);
-                setSubtitle(selectedCategory);
-                showFabPaging(true);
                 return true;
             case R.id.action_now_playing :
                 selectedCategory = Constant.NOW_PLAYING;
                 resetPage();
                 loadData(selectedCategory);
-                setSubtitle(selectedCategory);
-                showFabPaging(true);
                 return true;
             case R.id.action_favorites :
                 selectedCategory = Constant.FAVORITES;
-                setSubtitle(selectedCategory);
-                categorySelected = selectedCategory;
-                setupLoader(this, getContentResolver());
-                restartLoader(getSupportLoaderManager());
-                showFabPaging(false);
+                loadData(selectedCategory);
                 return true;
             default: return super.onOptionsItemSelected(item);
         }
@@ -351,21 +329,47 @@ implements MovieAdapter.ItemClickListener, SwipeRefreshLayout.OnRefreshListener{
     private void loadData(String category){
         switch (category){
             case Constant.POPULAR :
+                setSubtitle(category);
                 movieAdapter.replaceAll(data);
                 getDataFromAPI(category, currentPage);
                 break;
             case Constant.TOP_RATED :
+                setSubtitle(category);
                 movieAdapter.replaceAll(data);
                 getDataFromAPI(category, currentPage);
                 break;
             case Constant.UP_COMING :
+                setSubtitle(category);
                 movieAdapter.replaceAll(data);
                 getDataFromAPI(category, currentPage);
                 break;
             case Constant.NOW_PLAYING :
+                setSubtitle(category);
                 movieAdapter.replaceAll(data);
                 getDataFromAPI(category, currentPage);
                 break;
+            case Constant.FAVORITES :
+                setSubtitle(category);
+                categorySelected = selectedCategory;
+                setupLoader(this, getContentResolver());
+                restartLoader(getSupportLoaderManager());
+                break;
+        }
+        if(!isConnectionAvailable()){
+            if(category.equals(Constant.FAVORITES)){
+                rvMovie.setVisibility(View.VISIBLE);
+                llNetworkRetry.setVisibility(View.INVISIBLE);
+            }else {
+                rvMovie.setVisibility(View.INVISIBLE);
+                llNetworkRetry.setVisibility(View.VISIBLE);
+            }
+            showFabPaging(false);
+        }else {
+            rvMovie.setVisibility(View.VISIBLE);
+            llNetworkRetry.setVisibility(View.INVISIBLE);
+            if(category.equals(Constant.FAVORITES)){
+                showFabPaging(false);
+            }else {showFabPaging(true);}
         }
     }
     private void setSubtitle(String selectedCategory){
@@ -387,25 +391,19 @@ implements MovieAdapter.ItemClickListener, SwipeRefreshLayout.OnRefreshListener{
                 break;
         }
     }
-    private boolean isNetworkConnected(){
+    private boolean isConnectionAvailable(){
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected();
-    }
-    private boolean isWifiConnected(){
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected() && (ConnectivityManager.TYPE_WIFI == networkInfo.getType());
+        if ((networkInfo != null && networkInfo.isConnected()) || (networkInfo != null && networkInfo.isConnected() && (ConnectivityManager.TYPE_WIFI == networkInfo.getType()))){
+            return true;
+        }else {
+            return false;
+        }
     }
 
     @Override
     public void onRefresh() {
-        if (selectedCategory.equals(Constant.FAVORITES)) {
-            restartLoader(getSupportLoaderManager());
-        } else {
-            resetPage();
-            loadData(selectedCategory);
-        }
+        loadData(selectedCategory);
     }
     private void showFabPaging(boolean show){
         if(show){
