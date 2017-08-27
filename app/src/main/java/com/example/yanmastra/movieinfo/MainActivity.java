@@ -77,7 +77,27 @@ implements MovieAdapter.ItemClickListener, SwipeRefreshLayout.OnRefreshListener{
         rvMovie.setHasFixedSize(true);
         movieAdapter = new MovieAdapter(data, this);
         rvMovie.setAdapter(movieAdapter);
-
+        //paging fab
+        fab_next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(currentPage < movies.getTotal_pages()){
+                    currentPage +=1;
+                    loadData(selectedCategory);
+                    setPageInfo(currentPage);
+                }
+            }
+        });
+        fab_previous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(currentPage > 1){
+                    currentPage -= 1;
+                    loadData(selectedCategory);
+                    setPageInfo(currentPage);
+                }
+            }
+        });
         if(isConnectionAvailable()){
             resetPage();
             if(savedInstanceState != null){
@@ -92,30 +112,8 @@ implements MovieAdapter.ItemClickListener, SwipeRefreshLayout.OnRefreshListener{
                 setSubtitle(Constant.POPULAR);
                 resetPage();
             }
-            loadData(selectedCategory);
-
-            //paging
             setPageInfo(currentPage);
-            fab_next.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(currentPage < movies.getTotal_pages()){
-                        currentPage +=1;
-                        loadData(selectedCategory);
-                        setPageInfo(currentPage);
-                    }
-                }
-            });
-            fab_previous.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(currentPage > 1){
-                        currentPage -= 1;
-                        loadData(selectedCategory);
-                        setPageInfo(currentPage);
-                    }
-                }
-            });
+            loadData(selectedCategory);
         }else {
             resetPage();
             if(savedInstanceState != null){
