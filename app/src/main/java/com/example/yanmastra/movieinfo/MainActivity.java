@@ -55,7 +55,6 @@ implements MovieAdapter.ItemClickListener, SwipeRefreshLayout.OnRefreshListener{
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private String selectedCategory = Constant.POPULAR;
-    private String categorySelected;
     private static int currentPage =1;
 
     @BindView(R.id.network_retry) LinearLayout llNetworkRetry;
@@ -155,7 +154,7 @@ implements MovieAdapter.ItemClickListener, SwipeRefreshLayout.OnRefreshListener{
 
                     @Override
                     protected void onStartLoading() {
-                        if(categorySelected.equals(Constant.FAVORITES)){
+                        if(selectedCategory.equals(Constant.FAVORITES)){
                             forceLoad();
                         }
                     }
@@ -350,7 +349,6 @@ implements MovieAdapter.ItemClickListener, SwipeRefreshLayout.OnRefreshListener{
                 break;
             case Constant.FAVORITES :
                 setSubtitle(category);
-                categorySelected = selectedCategory;
                 setupLoader(this, getContentResolver());
                 restartLoader(getSupportLoaderManager());
                 break;
@@ -404,6 +402,7 @@ implements MovieAdapter.ItemClickListener, SwipeRefreshLayout.OnRefreshListener{
     @Override
     public void onRefresh() {
         loadData(selectedCategory);
+        Log.w(TAG, "when refresh : "+selectedCategory);
     }
     private void showFabPaging(boolean show){
         if(show){
@@ -422,10 +421,5 @@ implements MovieAdapter.ItemClickListener, SwipeRefreshLayout.OnRefreshListener{
     private void resetPage(){
         currentPage = 1;
         setPageInfo(currentPage);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
     }
 }
