@@ -326,24 +326,24 @@ implements MovieAdapter.ItemClickListener, SwipeRefreshLayout.OnRefreshListener{
     private void loadData(String category){
         switch (category){
             case Constant.POPULAR :
+                getDataFromAPI(category, currentPage);
                 setSubtitle(category);
                 movieAdapter.replaceAll(data);
-                getDataFromAPI(category, currentPage);
                 break;
             case Constant.TOP_RATED :
+                getDataFromAPI(category, currentPage);
                 setSubtitle(category);
                 movieAdapter.replaceAll(data);
-                getDataFromAPI(category, currentPage);
                 break;
             case Constant.UP_COMING :
+                getDataFromAPI(category, currentPage);
                 setSubtitle(category);
                 movieAdapter.replaceAll(data);
-                getDataFromAPI(category, currentPage);
                 break;
             case Constant.NOW_PLAYING :
+                getDataFromAPI(category, currentPage);
                 setSubtitle(category);
                 movieAdapter.replaceAll(data);
-                getDataFromAPI(category, currentPage);
                 break;
             case Constant.FAVORITES :
                 setSubtitle(category);

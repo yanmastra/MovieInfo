@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
  * Created by Yan Mastra on 8/18/2017.
  */
 
-public class ReviewAdapter  extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>{
+public class ReviewAdapter  extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private static final String TAG = ReviewAdapter.class.getSimpleName();
     private List<ReviewResults> data = new ArrayList<>();
 
@@ -32,14 +32,13 @@ public class ReviewAdapter  extends RecyclerView.Adapter<ReviewAdapter.ReviewVie
     @Override
     public ReviewViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        int layout = R.layout.review_items;
-        View view = LayoutInflater.from(context).inflate(layout, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.review_items, parent, false);
         return new ReviewViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ReviewViewHolder holder, int position) {
-        holder.bind(data.get(position));
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        ((ReviewViewHolder) holder).bind(data.get(position));
     }
 
     @Override
@@ -50,6 +49,7 @@ public class ReviewAdapter  extends RecyclerView.Adapter<ReviewAdapter.ReviewVie
     class ReviewViewHolder extends RecyclerView.ViewHolder{
         @BindView(R.id.tv_author) TextView author;
         @BindView(R.id.tv_review) TextView review;
+
         public ReviewViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);

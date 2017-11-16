@@ -198,9 +198,11 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     private void initLoader(LoaderManager loaderManager){
         loaderManager.initLoader(Constant.LOADER_ID, null, loaderCallbacks);
     }
+
     private Uri uriWithIDBuilder(Long movieId) {
         return ContentUris.withAppendedId(FavoriteContract.Entry.CONTENT_URI, movieId);
     }
+
     private void setFavoriteButton(int count) {
         if(count > 0){
             onStatusReceived(true);
@@ -208,6 +210,7 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
             onStatusReceived(false);
         }
     }
+
     private void onStatusReceived(boolean isFavorite) {
         if(isFavorite){
             fab.setImageResource(R.drawable.ic_star_selected);
@@ -263,12 +266,12 @@ public class DetailActivity extends AppCompatActivity implements TrailerAdapter.
     }
 
     private void reviewRecyclerView(){
-        reviewAdapter = new ReviewAdapter(reviewResults);
-        rvReview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        rvReview.setHasFixedSize(true);
         movieId = getIntent().getStringExtra(Constant.MOVIE_ID);
         getReviewFromAPI(movieId);
+        reviewAdapter = new ReviewAdapter(reviewResults);
         rvReview.setAdapter(reviewAdapter);
+        rvReview.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        rvReview.setHasFixedSize(true);
         rvReview.setNestedScrollingEnabled(false);
     }
     private void getReviewFromAPI(String movieId){

@@ -7,8 +7,6 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 /**
@@ -28,9 +26,8 @@ public class FavoriteContentProvider extends ContentProvider {
         return true;
     }
 
-    @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor result = null;
         final SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -67,15 +64,15 @@ public class FavoriteContentProvider extends ContentProvider {
         return result;
     }
 
-    @Nullable
+    
     @Override
-    public String getType(@NonNull Uri uri) {
+    public String getType(Uri uri) {
         return null;
     }
 
-    @Nullable
+    
     @Override
-    public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
+    public Uri insert(Uri uri,  ContentValues values) {
         Uri result = null;
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
         int match = uriMatcher.match(uri);
@@ -96,7 +93,7 @@ public class FavoriteContentProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+    public int delete( Uri uri,  String selection,  String[] selectionArgs) {
         int result = 0;
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
         int match = uriMatcher.match(uri);
@@ -116,7 +113,7 @@ public class FavoriteContentProvider extends ContentProvider {
     }
 
     @Override
-    public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
+    public int update( Uri uri,  ContentValues values,  String selection,  String[] selectionArgs) {
         return 0;
     }
     public static UriMatcher buildUriMatcher(){
